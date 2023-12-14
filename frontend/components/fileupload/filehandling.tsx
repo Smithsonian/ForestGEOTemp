@@ -1,18 +1,13 @@
 "use client";
-import React, {useCallback, useState} from 'react';
+import React, {useState} from 'react';
 import {useSession} from "next-auth/react";
-import {DropzoneProps, DropzonePureProps, FileErrors, FileListProps, UploadValidationProps} from "@/config/macros";
+import {FileErrors, UploadValidationProps} from "@/config/macros";
 import {ValidationTable} from "@/components/fileupload/validationtable";
 import {usePlotContext} from "@/app/contexts/plotcontext";
-import {FileRejection, FileWithPath, useDropzone} from 'react-dropzone';
-import {parse, ParseConfig} from 'papaparse';
-import {FileUploadIcon} from "@/components/icons";
+import {FileWithPath} from 'react-dropzone';
 
 import '@/styles/dropzone.css';
 import {subtitle} from "@/config/primitives";
-import {Card, CardContent, CardHeader, Pagination} from "@mui/material";
-import {Skeleton} from "@mui/joy";
-import Chip from "@mui/joy/Chip";
 import Divider from "@mui/joy/Divider";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {DropzoneLogic} from "@/components/fileupload/dropzone";

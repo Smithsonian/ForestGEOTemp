@@ -1,6 +1,6 @@
 "use client";
 import React, {useEffect, useState} from "react";
-import {Plot, plots} from "@/config/macros";
+import {plots} from "@/config/macros";
 import {usePlotContext, usePlotDispatch} from "@/app/contexts/plotcontext";
 import {useSession} from "next-auth/react";
 import Select from "@mui/joy/Select";

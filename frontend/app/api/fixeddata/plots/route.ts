@@ -21,7 +21,6 @@ async function runQuery(conn: sql.ConnectionPool, query: string) {
   return await conn.request().query(query);
 }
 
-
 export async function GET(): Promise<NextResponse<PlotRDS[]>> {
   let i = 0;
   let conn = await getSqlConnection(i);

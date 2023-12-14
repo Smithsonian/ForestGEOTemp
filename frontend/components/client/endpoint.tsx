@@ -26,7 +26,7 @@ import {
   usePersonnelLoadDispatch,
   usePlotsLoadDispatch,
   useQuadratsLoadDispatch,
-  useSpeciesLoadDispatch
+  useSpeciesLoadDispatch, useSubSpeciesLoadDispatch
 } from "@/app/contexts/fixeddatacontext";
 import {useFirstLoadContext, useFirstLoadDispatch} from "@/app/contexts/plotcontext";
 import WarningRoundedIcon from "@mui/icons-material/WarningRounded";
@@ -39,51 +39,57 @@ export default function Endpoint({children,}: { children: React.ReactNode }) {
   const personnelLoadDispatch = usePersonnelLoadDispatch();
   const quadratsLoadDispatch = useQuadratsLoadDispatch();
   const speciesLoadDispatch = useSpeciesLoadDispatch();
+  const subSpeciesLoadDispatch = useSubSpeciesLoadDispatch();
   const plotsLoadDispatch = usePlotsLoadDispatch();
+  const interval = 100 / 14;
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(0);
+      setLoading(loading + interval);
       setLoadingMsg('Retrieving Attributes...');
       let response = await fetch(`/api/fixeddata/attributes`, {method: 'GET'});
-      setLoading(9);
+      setLoading(loading + interval);
       if (attributeLoadDispatch) {
         attributeLoadDispatch({attributeLoad: await response.json()});
       }
-      setLoading(18);
+      setLoading(loading + interval);
       setLoadingMsg('Retrieving Census...');
       response = await fetch(`/api/fixeddata/census`, {method: 'GET'});
-      setLoading(27);
+      setLoading(loading + interval);
       if (censusLoadDispatch) {
         censusLoadDispatch({censusLoad: await response.json()});
       }
-      setLoading(36);
+      setLoading(loading + interval);
       setLoadingMsg('Retrieving Personnel...');
-      await new Promise(f => setTimeout(f, 1000));
-      // response = await fetch(`/api/fixeddata/personnel`, {method: 'GET'});
-      setLoading(45);
-      // if(personnelLoadDispatch){
-      //   personnelLoadDispatch({personnelLoad: await response.json()});
-      // }
-      setLoading(54);
+      response = await fetch(`/api/fixeddata/personnel`, {method: 'GET'});
+      setLoading(loading + interval);
+      if(personnelLoadDispatch){
+        personnelLoadDispatch({personnelLoad: await response.json()});
+      }
+      setLoading(loading + interval);
       setLoadingMsg('Retrieving Quadrats...');
-      await new Promise(f => setTimeout(f, 1000));
-      // response = await fetch(`/api/fixeddata/quadrats`, {method: 'GET'});
-      setLoading(63);
-      // if (quadratsLoadDispatch) {
-      //   quadratsLoadDispatch({quadratsLoad: await response.json()});
-      // }
-      setLoading(72);
+      response = await fetch(`/api/fixeddata/quadrats`, {method: 'GET'});
+      setLoading(loading + interval);
+      if (quadratsLoadDispatch) {
+        quadratsLoadDispatch({quadratsLoad: await response.json()});
+      }
+      setLoading(loading + interval);
       setLoadingMsg('Retrieving Species...');
-      await new Promise(f => setTimeout(f, 1000));
-      // response = await fetch(`/api/fixeddata/species`, {method: 'GET'});
-      setLoading(81);
-      // if (speciesLoadDispatch) {
-      //   speciesLoadDispatch({speciesLoad: await response.json()});
-      // }
-      setLoading(90)
+      response = await fetch(`/api/fixeddata/species`, {method: 'GET'});
+      setLoading(loading + interval);
+      if (speciesLoadDispatch) {
+        speciesLoadDispatch({speciesLoad: await response.json()});
+      }
+      setLoading(loading + interval);
+      setLoadingMsg('Retrieving SubSpecies...');
+      response = await fetch(`/api/fixeddata/subspecies`, {method: 'GET'});
+      setLoading(loading + interval);
+      if (subSpeciesLoadDispatch) {
+        subSpeciesLoadDispatch({subSpeciesLoad: await response.json()});
+      }
+      setLoading(loading + interval)
       setLoadingMsg('Retrieving Plots...')
       response = await fetch(`/api/fixeddata/plots`, {method: 'GET'});
-      setLoading(99);
+      setLoading(loading + interval);
       if (plotsLoadDispatch) {
         plotsLoadDispatch({plotsLoad: await response.json()});
       }
@@ -194,9 +200,12 @@ export default function Endpoint({children,}: { children: React.ReactNode }) {
                       <Typography level="body-sm" color="neutral"><b>{loadingMsg}</b></Typography>
                     </> :
                     <>
-                      <Typography level={"body-sm"} >Select <b>Core Measurements Hub</b> to view existing core measurement data for a given plot, census, and quadrat</Typography>
-                      <Typography level={"body-sm"}>Select <b>CSV & ArcGIS File Upload Hub</b> to upload core measurements in either CSV format or in collected ArcGIS format</Typography>
-                      <Typography level={"body-sm"}>Select <b>Measurement Properties Hub</b> to view and edit measurement properties used in data collection</Typography>
+                      <Typography level={"body-sm"}>Select <b>Core Measurements Hub</b> to view existing core
+                        measurement data for a given plot, census, and quadrat</Typography>
+                      <Typography level={"body-sm"}>Select <b>CSV & ArcGIS File Upload Hub</b> to upload core
+                        measurements in either CSV format or in collected ArcGIS format</Typography>
+                      <Typography level={"body-sm"}>Select <b>Measurement Properties Hub</b> to view and edit
+                        measurement properties used in data collection</Typography>
                     </>}
                 </Stack>
               </DialogContent>
