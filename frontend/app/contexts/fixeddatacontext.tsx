@@ -8,6 +8,7 @@ export const CensusLoadContext = createContext<GridValidRowModel[] | null>(null)
 export const PersonnelLoadContext = createContext<GridValidRowModel[] | null>(null);
 export const QuadratsLoadContext = createContext<GridValidRowModel[] | null>(null);
 export const SpeciesLoadContext = createContext<GridValidRowModel[] | null>(null);
+export const SubSpeciesLoadContext = createContext<GridValidRowModel[] | null>(null);
 export const PlotsLoadContext = createContext<GridValidRowModel[] | null>(null);
 export const AttributeLoadDispatchContext = createContext<Dispatch<{
   attributeLoad: GridValidRowModel[] | null
@@ -23,6 +24,9 @@ export const QuadratsLoadDispatchContext = createContext<Dispatch<{
 }> | null>(null);
 export const SpeciesLoadDispatchContext = createContext<Dispatch<{
   speciesLoad: GridValidRowModel[] | null
+}> | null>(null);
+export const SubSpeciesLoadDispatchContext = createContext<Dispatch<{
+  subSpeciesLoad: GridValidRowModel[] | null
 }> | null>(null);
 export const PlotsLoadDispatchContext = createContext<Dispatch<{ plotsLoad: GridValidRowModel[] | null }> | null>(null);
 
@@ -48,6 +52,10 @@ export function FixedDataProvider({children}: { children: React.ReactNode }) {
     speciesLoadReducer,
     null
   )
+  const [subSpeciesLoad, subSpeciesLoadDispatch] = useReducer(
+    subSpeciesLoadReducer,
+    null
+  )
   
   const [plotsLoad, plotsLoadDispatch] = useReducer(
     plotsLoadReducer,
@@ -65,11 +73,15 @@ export function FixedDataProvider({children}: { children: React.ReactNode }) {
                   <QuadratsLoadDispatchContext.Provider value={quadratsLoadDispatch}>
                     <SpeciesLoadContext.Provider value={speciesLoad}>
                       <SpeciesLoadDispatchContext.Provider value={speciesLoadDispatch}>
-                        <PlotsLoadContext.Provider value={plotsLoad}>
-                          <PlotsLoadDispatchContext.Provider value={plotsLoadDispatch}>
-                            {children}
-                          </PlotsLoadDispatchContext.Provider>
-                        </PlotsLoadContext.Provider>
+                        <SubSpeciesLoadContext.Provider value={subSpeciesLoad}>
+                          <SubSpeciesLoadDispatchContext.Provider value={subSpeciesLoadDispatch}>
+                            <PlotsLoadContext.Provider value={plotsLoad}>
+                              <PlotsLoadDispatchContext.Provider value={plotsLoadDispatch}>
+                                {children}
+                              </PlotsLoadDispatchContext.Provider>
+                            </PlotsLoadContext.Provider>
+                          </SubSpeciesLoadDispatchContext.Provider>
+                        </SubSpeciesLoadContext.Provider>
                       </SpeciesLoadDispatchContext.Provider>
                     </SpeciesLoadContext.Provider>
                   </QuadratsLoadDispatchContext.Provider>
@@ -101,6 +113,10 @@ function quadratsLoadReducer(currentQuadratsLoad: any, action: { quadratsLoad: G
 
 function speciesLoadReducer(currentSpeciesLoad: any, action: { speciesLoad: GridValidRowModel[] | null }) {
   return action.speciesLoad;
+}
+
+function subSpeciesLoadReducer(currentSpeciesLoad: any, action: { subSpeciesLoad: GridValidRowModel[] | null }) {
+  return action.subSpeciesLoad;
 }
 
 function plotsLoadReducer(currentPlotsLoad: any, action: { plotsLoad: GridValidRowModel[] | null }) {
@@ -145,6 +161,14 @@ export function useSpeciesLoadContext() {
 
 export function useSpeciesLoadDispatch() {
   return useContext(SpeciesLoadDispatchContext);
+}
+
+export function useSubSpeciesLoadContext() {
+  return useContext(SubSpeciesLoadContext);
+}
+
+export function useSubSpeciesLoadDispatch() {
+  return useContext(SubSpeciesLoadDispatchContext);
 }
 
 export function usePlotsLoadContext() {

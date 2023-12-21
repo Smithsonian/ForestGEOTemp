@@ -1,7 +1,7 @@
-import {NextResponse} from "next/server";
+import {NextRequest, NextResponse} from "next/server";
 import sql from "mssql";
 import {sqlConfig} from "@/config/macros";
-import {PersonnelRDS} from "@/config/sqlmacros";
+import {AttributeRDS} from "@/config/sqlmacros";
 
 async function getSqlConnection(tries: number) {
   return await sql.connect(sqlConfig).catch((err) => {
@@ -20,27 +20,14 @@ async function runQuery(conn: sql.ConnectionPool, query: string) {
   }
   return await conn.request().query(query);
 }
-
-
-export async function GET(): Promise<NextResponse<PersonnelRDS[]>> {
+export async function GET(request: NextRequest) {
   let i = 0;
   let conn = await getSqlConnection(i);
   if (!conn) throw new Error('sql connection failed');
-  let results = await runQuery(conn, `SELECT * FROM forestgeo.Attributes`);
+  
+  let plotID = request.nextUrl.searchParams.get('plotID')!;
+  let results = await runQuery(conn, `SELECT COUNT(*) FROM forestgeo.Quadrats WHERE PlotID = ${plotID}`);
   if (!results) throw new Error("call failed");
   await conn.close();
-  let personnelRows: PersonnelRDS[] = []
-  Object.values(results.recordset).map((row, index) => {
-    personnelRows.push({
-      id: index + 1,
-      personnelID: row['PersonnelID'],
-      firstName: row['FirstName'],
-      lastName: row['LastName'],
-      role: row['Role']
-    })
-  })
-  return new NextResponse(
-    JSON.stringify(personnelRows),
-    {status: 200}
-  );
+  return new NextResponse(JSON.stringify(Object.values(results.recordset[0])));
 }
