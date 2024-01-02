@@ -1,11 +1,11 @@
 "use client";
 import React, {useEffect, useState} from "react";
 import {useSession} from "next-auth/react";
-import {redirect} from "next/navigation";
 import {animated, useTransition} from "@react-spring/web";
 import styles from "@/styles/styles.module.css";
 import Sidebar from "@/components/sidebar";
 import Box from "@mui/joy/Box";
+import EntryModal from "@/components/client/entrymodal";
 
 const slides = [
   'background-1.jpg',
@@ -29,10 +29,18 @@ export default function Page() {
     },
     exitBeforeEnter: true,
   })
-  useEffect(() => void setInterval(() => setIndex(state => (state + 1) % slides.length), 5000), [])
+  useEffect(
+    () => {
+      void setInterval(() => setIndex(state => (state + 1) % slides.length), 5000)
+    }, []);
   const {status} = useSession();
-  if (status == "authenticated") redirect('/dashboard');
-  else
+  if (status == "authenticated") {
+    return (
+      <>
+        <EntryModal/>
+      </>
+    );
+  } else
     return (
       <>
         <Box sx={{display: 'flex', minHeight: '100vh', minWidth: '100vh'}}>
